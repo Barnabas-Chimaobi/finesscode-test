@@ -11,19 +11,19 @@ import {
 } from 'react-native';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
-const Login = (props) => {
+const VerifyPhone = (props) => {
+  const [otp, setOtp] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [passWord, setPassword] = useState('');
 
   // function to register a phone number
-  const loginUser = async () => {
+  const verifyPhone = async () => {
     const reqBody = {
       phoneNumber: phoneNumber,
-      password: passWord,
+      otp: otp,
     };
     try {
-      const login = await fetch(
-        'http://ec2-18-191-247-251.us-east-2.compute.amazonaws.com:5000/api/v1/auth/sign-in',
+      const phone = await fetch(
+        'http://ec2-18-191-247-251.us-east-2.compute.amazonaws.com:5000/api/v1/auth/verify-phoneNumber',
         {
           method: 'POST',
           headers: {
@@ -33,10 +33,8 @@ const Login = (props) => {
           body: JSON.stringify(reqBody),
         },
       );
-      const verifyPhone = await login.json();
-      if (verifyPhone !== null) {
-        props.navigation.navigate('Dashboard');
-      }
+      const verifyPhone = await phone.json();
+      props.navigation.navigate('Login');
       console.log(verifyPhone, 'PHONEVERIFY');
     } catch (err) {
       console.log(err, 'ERRRRRRRRR');
@@ -47,24 +45,12 @@ const Login = (props) => {
     <View style={styles.container}>
       <ScrollView>
         <View>
-          <View style={styles.view1}>
-            <Image source={require('../assets/baseline.png')} />
-            <Text style={styles.account}>Already have an account? </Text>
-            <TouchableWithoutFeedback>
-              <Text style={styles.signin}>Sign in</Text>
-            </TouchableWithoutFeedback>
-          </View>
-
           <View style={{height: '70%'}}>
-            <View style={styles.imageView}>
-              <Image
-                style={styles.image}
-                source={require('../assets/user.png')}
-              />
-            </View>
             <View>
-              <Text style={styles.getStarted}>Getting Started</Text>
-              <Text style={styles.create}>Create an account to continue</Text>
+              <Text style={styles.getStarted}>COMFIRM PHONE NUMBER</Text>
+              <Text style={styles.create}>
+                please confirm phone number to continue
+              </Text>
             </View>
             <Text style={styles.fullname}>Phone Number</Text>
 
@@ -73,28 +59,6 @@ const Login = (props) => {
                 <TextInput
                   style={styles.textInput1}
                   onChangeText={(text) => setPhoneNumber(text)}
-                  placeholder="09076865375"
-                  clearTextOnFocus={true}
-                />
-                <MaterialIcon
-                  style={{
-                    color: 'gray',
-                    fontSize: 23,
-                    marginTop: -10,
-                    paddingRight: 5,
-                  }}
-                  name="call-end"
-                />
-              </View>
-            </View>
-
-            <Text style={styles.fullname}>Password</Text>
-
-            <View style={styles.emailView}>
-              <View style={styles.textInputWrapper}>
-                <TextInput
-                  style={styles.textInput1}
-                  onChangeText={(text) => setPassword(text)}
                   placeholder="123456"
                   clearTextOnFocus={true}
                 />
@@ -109,29 +73,42 @@ const Login = (props) => {
                 />
               </View>
             </View>
-            <TouchableWithoutFeedback
-              onPress={() => props.navigation.navigate('ForgotPassword')}>
-              <Text style={styles.forgot}>Forgot your credentials?</Text>
-            </TouchableWithoutFeedback>
+
+            <Text style={styles.fullname}>OTP</Text>
+
+            <View style={styles.emailView}>
+              <View style={styles.textInputWrapper}>
+                <TextInput
+                  style={styles.textInput1}
+                  onChangeText={(text) => setOtp(text)}
+                  placeholder="123456"
+                  clearTextOnFocus={true}
+                />
+                <MaterialIcon
+                  style={{
+                    color: 'gray',
+                    fontSize: 23,
+                    marginTop: -10,
+                    paddingRight: 5,
+                  }}
+                  name="call-end"
+                />
+              </View>
+            </View>
+
+            <Text style={styles.forgot}>Didn't get Otp?</Text>
             <View style={styles.termsView}>
               <Image source={require('../assets/checkk.png')} />
               <View style={styles.terms1}>
-                <Text style={styles.createaccount}>
-                  By creating an account, you agree to our
-                </Text>
-                <TouchableWithoutFeedback>
-                  <Text style={styles.terms}>Terms and Conditions</Text>
+                <TouchableWithoutFeedback
+                  onPress={() => props.navigation.navigate('Register')}>
+                  <Text style={styles.terms}>Click to to resend</Text>
                 </TouchableWithoutFeedback>
               </View>
             </View>
             <View style={styles.button}>
-              <TouchableWithoutFeedback onPress={() => loginUser()}>
-                <Text style={styles.buttontext}>Sign In</Text>
-              </TouchableWithoutFeedback>
-            </View>
-            <View style={styles.button}>
-              <TouchableWithoutFeedback onPress={() => registerPhone()}>
-                <Text style={styles.buttontext}>Create an account</Text>
+              <TouchableWithoutFeedback onPress={() => verifyPhone()}>
+                <Text style={styles.buttontext}>Sign Up</Text>
               </TouchableWithoutFeedback>
             </View>
           </View>
@@ -140,7 +117,7 @@ const Login = (props) => {
     </View>
   );
 };
-export default Login;
+export default VerifyPhone;
 
 const styles = StyleSheet.create({
   view1: {

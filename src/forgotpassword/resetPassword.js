@@ -11,19 +11,22 @@ import {
 } from 'react-native';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
-const Login = (props) => {
+const ForgotPassword = (props) => {
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [passWord, setPassword] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [otp, setOtp] = useState('');
 
   // function to register a phone number
-  const loginUser = async () => {
+  const resetPassword = async () => {
     const reqBody = {
       phoneNumber: phoneNumber,
-      password: passWord,
+      password: password,
+      otp: otp,
     };
     try {
-      const login = await fetch(
-        'http://ec2-18-191-247-251.us-east-2.compute.amazonaws.com:5000/api/v1/auth/sign-in',
+      const reset = await fetch(
+        'http://ec2-18-191-247-251.us-east-2.compute.amazonaws.com:5000/api/v1/auth/reset-pwd',
         {
           method: 'POST',
           headers: {
@@ -33,10 +36,8 @@ const Login = (props) => {
           body: JSON.stringify(reqBody),
         },
       );
-      const verifyPhone = await login.json();
-      if (verifyPhone !== null) {
-        props.navigation.navigate('Dashboard');
-      }
+      const verifyPhone = await reset.json();
+      props.navigation.navigate('Login');
       console.log(verifyPhone, 'PHONEVERIFY');
     } catch (err) {
       console.log(err, 'ERRRRRRRRR');
@@ -59,12 +60,12 @@ const Login = (props) => {
             <View style={styles.imageView}>
               <Image
                 style={styles.image}
-                source={require('../assets/user.png')}
+                source={require('../assets/key.png')}
               />
             </View>
             <View>
-              <Text style={styles.getStarted}>Getting Started</Text>
-              <Text style={styles.create}>Create an account to continue</Text>
+              <Text style={styles.getStarted}>Reset Password</Text>
+              <Text style={styles.create}>Enter new details to proceed </Text>
             </View>
             <Text style={styles.fullname}>Phone Number</Text>
 
@@ -73,7 +74,7 @@ const Login = (props) => {
                 <TextInput
                   style={styles.textInput1}
                   onChangeText={(text) => setPhoneNumber(text)}
-                  placeholder="09076865375"
+                  placeholder="08097654534"
                   clearTextOnFocus={true}
                 />
                 <MaterialIcon
@@ -88,14 +89,14 @@ const Login = (props) => {
               </View>
             </View>
 
-            <Text style={styles.fullname}>Password</Text>
+            <Text style={styles.fullname}>New Password</Text>
 
             <View style={styles.emailView}>
               <View style={styles.textInputWrapper}>
                 <TextInput
                   style={styles.textInput1}
-                  onChangeText={(text) => setPassword(text)}
-                  placeholder="123456"
+                  onChangeText={(text) => setPhoneNumber(text)}
+                  placeholder=".........."
                   clearTextOnFocus={true}
                 />
                 <MaterialIcon
@@ -109,11 +110,53 @@ const Login = (props) => {
                 />
               </View>
             </View>
-            <TouchableWithoutFeedback
-              onPress={() => props.navigation.navigate('ForgotPassword')}>
-              <Text style={styles.forgot}>Forgot your credentials?</Text>
-            </TouchableWithoutFeedback>
-            <View style={styles.termsView}>
+
+            <Text style={styles.fullname}>Confirm New Password</Text>
+
+            <View style={styles.emailView}>
+              <View style={styles.textInputWrapper}>
+                <TextInput
+                  style={styles.textInput1}
+                  onChangeText={(text) => setPhoneNumber(text)}
+                  placeholder="..........."
+                  clearTextOnFocus={true}
+                />
+                <MaterialIcon
+                  style={{
+                    color: 'gray',
+                    fontSize: 23,
+                    marginTop: -10,
+                    paddingRight: 5,
+                  }}
+                  name="call-end"
+                />
+              </View>
+            </View>
+
+            <Text style={styles.fullname}>Enter OTP</Text>
+
+            <View style={styles.emailView}>
+              <View style={styles.textInputWrapper}>
+                <TextInput
+                  style={styles.textInput1}
+                  onChangeText={(text) => setPhoneNumber(text)}
+                  placeholder="08097654534"
+                  clearTextOnFocus={true}
+                />
+                <MaterialIcon
+                  style={{
+                    color: 'gray',
+                    fontSize: 23,
+                    marginTop: -10,
+                    paddingRight: 5,
+                  }}
+                  name="call-end"
+                />
+              </View>
+            </View>
+
+            {/* <Text style={styles.forgot}>Forgot your credentials?</Text> */}
+            {/* <View style={styles.termsView}>
               <Image source={require('../assets/checkk.png')} />
               <View style={styles.terms1}>
                 <Text style={styles.createaccount}>
@@ -123,15 +166,10 @@ const Login = (props) => {
                   <Text style={styles.terms}>Terms and Conditions</Text>
                 </TouchableWithoutFeedback>
               </View>
-            </View>
+            </View> */}
             <View style={styles.button}>
-              <TouchableWithoutFeedback onPress={() => loginUser()}>
-                <Text style={styles.buttontext}>Sign In</Text>
-              </TouchableWithoutFeedback>
-            </View>
-            <View style={styles.button}>
-              <TouchableWithoutFeedback onPress={() => registerPhone()}>
-                <Text style={styles.buttontext}>Create an account</Text>
+              <TouchableWithoutFeedback onPress={() => resetPassword()}>
+                <Text style={styles.buttontext}>Proceed</Text>
               </TouchableWithoutFeedback>
             </View>
           </View>
@@ -140,7 +178,7 @@ const Login = (props) => {
     </View>
   );
 };
-export default Login;
+export default ForgotPassword;
 
 const styles = StyleSheet.create({
   view1: {
@@ -181,10 +219,11 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   create: {
-    marginLeft: '19%',
+    marginLeft: '4%',
     fontSize: 18,
     marginTop: 12,
     color: '#757575',
+    textAlign: 'center',
   },
   emailView: {
     display: 'flex',

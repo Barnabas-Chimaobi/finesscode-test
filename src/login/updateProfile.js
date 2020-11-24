@@ -11,33 +11,41 @@ import {
 } from 'react-native';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
-const Login = (props) => {
-  const [phoneNumber, setPhoneNumber] = useState('');
+const UpdateProfile = (props) => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState();
+  const [email, setEmail] = useState('');
   const [passWord, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   // function to register a phone number
-  const loginUser = async () => {
-    const reqBody = {
-      phoneNumber: phoneNumber,
+  const registerPhone = async () => {
+    const profile = {
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
       password: passWord,
     };
     try {
-      const login = await fetch(
-        'http://ec2-18-191-247-251.us-east-2.compute.amazonaws.com:5000/api/v1/auth/sign-in',
-        {
-          method: 'POST',
-          headers: {
-            // Accept: 'application/json',
-            'Content-Type': 'application/json',
+      if (passWord === confirmPassword) {
+        const phone = await fetch(
+          'http://ec2-18-191-247-251.us-east-2.compute.amazonaws.com:5000/api/v1/user/update-profile/5fa3ef970f0e155f6c00b8a8',
+          {
+            method: 'PUt',
+            headers: {
+              'x-access-token':
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InBob25lTnVtYmVyIjoiMDcwODMzNjc5MDEiLCJ0aW1lIjoiMjAyMC0xMS0yM1QxOToyNDozNC4zNTVaIn0sImlhdCI6MTYwNjE1OTQ3NCwiZXhwIjoxNjA2MzMyMjc0fQ.OeZtvGSbztTlpUHEDl0tfccP7w6fYvNUWrtQI75Tmmc',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(profile),
           },
-          body: JSON.stringify(reqBody),
-        },
-      );
-      const verifyPhone = await login.json();
-      if (verifyPhone !== null) {
-        props.navigation.navigate('Dashboard');
+        );
+        const verifyPhone = await phone.json();
+        // props.navigation.navigate('VerifyPhone');
+        console.log(verifyPhone, 'PHONEVERIFY');
+      } else {
+        alert('Please check that the password entered are correct');
       }
-      console.log(verifyPhone, 'PHONEVERIFY');
     } catch (err) {
       console.log(err, 'ERRRRRRRRR');
     }
@@ -48,10 +56,10 @@ const Login = (props) => {
       <ScrollView>
         <View>
           <View style={styles.view1}>
-            <Image source={require('../assets/baseline.png')} />
-            <Text style={styles.account}>Already have an account? </Text>
+            <Image />
+            <Text style={styles.account}> </Text>
             <TouchableWithoutFeedback>
-              <Text style={styles.signin}>Sign in</Text>
+              <Text style={styles.signin}></Text>
             </TouchableWithoutFeedback>
           </View>
 
@@ -63,17 +71,61 @@ const Login = (props) => {
               />
             </View>
             <View>
-              <Text style={styles.getStarted}>Getting Started</Text>
-              <Text style={styles.create}>Create an account to continue</Text>
+              <Text style={styles.getStarted}>Profile Update</Text>
+              <Text style={styles.create}>We will like to know you better</Text>
             </View>
-            <Text style={styles.fullname}>Phone Number</Text>
+            <Text style={styles.fullname}>First Name</Text>
 
             <View style={styles.emailView}>
               <View style={styles.textInputWrapper}>
                 <TextInput
                   style={styles.textInput1}
-                  onChangeText={(text) => setPhoneNumber(text)}
-                  placeholder="09076865375"
+                  onChangeText={(text) => setFirstName(text)}
+                  placeholder="chinatu"
+                  clearTextOnFocus={true}
+                />
+                <MaterialIcon
+                  style={{
+                    color: 'gray',
+                    fontSize: 23,
+                    marginTop: -10,
+                    paddingRight: 5,
+                  }}
+                  name="call-end"
+                />
+              </View>
+            </View>
+
+            <Text style={styles.fullname}>Last Name</Text>
+
+            <View style={styles.emailView}>
+              <View style={styles.textInputWrapper}>
+                <TextInput
+                  style={styles.textInput1}
+                  onChangeText={(text) => setLastName(text)}
+                  placeholder="onyemachi"
+                  clearTextOnFocus={true}
+                />
+                <MaterialIcon
+                  style={{
+                    color: 'gray',
+                    fontSize: 23,
+                    marginTop: -10,
+                    paddingRight: 5,
+                  }}
+                  name="call-end"
+                />
+              </View>
+            </View>
+
+            <Text style={styles.fullname}>Email</Text>
+
+            <View style={styles.emailView}>
+              <View style={styles.textInputWrapper}>
+                <TextInput
+                  style={styles.textInput1}
+                  onChangeText={(text) => setEmail(text)}
+                  placeholder="jmartins@gmail.com"
                   clearTextOnFocus={true}
                 />
                 <MaterialIcon
@@ -95,7 +147,7 @@ const Login = (props) => {
                 <TextInput
                   style={styles.textInput1}
                   onChangeText={(text) => setPassword(text)}
-                  placeholder="123456"
+                  placeholder="1@bandave"
                   clearTextOnFocus={true}
                 />
                 <MaterialIcon
@@ -109,29 +161,32 @@ const Login = (props) => {
                 />
               </View>
             </View>
-            <TouchableWithoutFeedback
-              onPress={() => props.navigation.navigate('ForgotPassword')}>
-              <Text style={styles.forgot}>Forgot your credentials?</Text>
-            </TouchableWithoutFeedback>
-            <View style={styles.termsView}>
-              <Image source={require('../assets/checkk.png')} />
-              <View style={styles.terms1}>
-                <Text style={styles.createaccount}>
-                  By creating an account, you agree to our
-                </Text>
-                <TouchableWithoutFeedback>
-                  <Text style={styles.terms}>Terms and Conditions</Text>
-                </TouchableWithoutFeedback>
+
+            <Text style={styles.fullname}>Confirm Password</Text>
+
+            <View style={styles.emailView}>
+              <View style={styles.textInputWrapper}>
+                <TextInput
+                  style={styles.textInput1}
+                  onChangeText={(text) => setConfirmPassword(text)}
+                  placeholder="1@bandave"
+                  clearTextOnFocus={true}
+                />
+                <MaterialIcon
+                  style={{
+                    color: 'gray',
+                    fontSize: 23,
+                    marginTop: -10,
+                    paddingRight: 5,
+                  }}
+                  name="call-end"
+                />
               </View>
             </View>
-            <View style={styles.button}>
-              <TouchableWithoutFeedback onPress={() => loginUser()}>
-                <Text style={styles.buttontext}>Sign In</Text>
-              </TouchableWithoutFeedback>
-            </View>
+
             <View style={styles.button}>
               <TouchableWithoutFeedback onPress={() => registerPhone()}>
-                <Text style={styles.buttontext}>Create an account</Text>
+                <Text style={styles.buttontext}>Done</Text>
               </TouchableWithoutFeedback>
             </View>
           </View>
@@ -140,7 +195,7 @@ const Login = (props) => {
     </View>
   );
 };
-export default Login;
+export default UpdateProfile;
 
 const styles = StyleSheet.create({
   view1: {

@@ -1,4 +1,4 @@
-import React, {Component, useEffect, useState} from 'react';
+import React, {Component} from 'react';
 import {
   View,
   Text,
@@ -10,247 +10,258 @@ import {
   TouchableWithoutFeedback,
   AsyncStorage,
 } from 'react-native';
-import Menu from '../login/login';
+import Menu from '../dashboard/menu';
 
-const Dashboard = () => {
-  const [card, setCard] = useState('JASON MARTINS');
-  const [amount, setAmount] = useState(['#207,050.00']);
-  const [transaction, setTransaction] = useState(['Electricity']);
-  let [dateofTransactiopn, setDateOfTransaction] = useState([]);
-  let [transactionAmount, setTransactionAmount] = useState([]);
+export default class Dashboard extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      card: 'JASON MARTINS',
+      amount: '#207,050.00',
+      transaction: 'Electricity',
+      date: '12 - 12 - 2020',
+    };
+  }
 
   //method for mounting component
 
-  useEffect(() => {
-    cardDetails();
-  }, []);
+  componentDidMount() {
+    this.cardDetails();
+  }
 
   // handles action for opening android/menu drawer
-  const openDrawer = () => {
+  openDrawer = () => {
     this.drawer.openDrawer();
   };
 
   // handles action for closing android/menu drawer
-  const closeDrawer = () => {
+  closeDrawer = () => {
     this.drawer.closeDrawer();
   };
 
   // handles action for notifications
-  const notification = async () => {
+  notification = async () => {
     const notifiedEvent = await fetch('izkjon.com/api/notification');
     const receivedNotification = JSON.stringify(notifiedEvent);
     AsyncStorage.setItem('notification', receivedNotification);
     console.log(receivedNotification, 'RECEIVEDNOTIFICATION');
-    props.navigation.navigate('Notification');
+    this.props.navigation.navigate('Notification');
   };
 
   // function that action for displaying user's card details
-  const cardDetails = async () => {
+  cardDetails = async () => {
     const userCardDetails = await fetch('izkjon.com/api/cardDetails');
     const fetchedCardDetails = JSON.stringify(userCardDetails);
     setCard(fetchedCardDetails.name);
     setAmount(fetchedCardDetails.amount);
-    set;
   };
 
   // method/function that routes to different services
-  const services = async () => {
-    props.navigation.navigate('navigateToRespectiveServices');
+  services = async () => {
+    this.props.navigation.navigate('navigateToRespectiveServices');
   };
 
-  const transactions = async () => {
+  transactions = async () => {
     const allTransactions = await fetch('izkjon.com/api/cardDetails');
     const fetchedTransactions = await JSON.stringify(allTransactions);
     const mapFetchedTransactions = fetchedTransactions.map((item) => {
       return item;
     });
-    setTransaction(mapFetchedTransactions.transaction);
-    setDateOfTransaction(mapFetchedTransactions.date);
-    setAmount(mapFetchedTransactions.amount);
   };
-
-  return (
-    <DrawerLayoutAndroid
-      drawerWidth={260}
-      drawerPosition="left"
-      renderNavigationView={(navigation) => (
-        <Menu navigation={navigation} closeDrawer={closeDrawer} />
-      )}
-      ref={(_drawer) => {
-        drawer = _drawer;
-      }}>
-      <View style={styles.maincontainer}>
-        <ScrollView>
-          <View style={styles.container}>
-            <TouchableWithoutFeedback onPress={() => openDrawer}>
-              <Image source={require('../assets/menu.png')} />
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={() => notification}>
-              <Image source={require('../assets/notification.png')} />
-            </TouchableWithoutFeedback>
-          </View>
-          <View style={styles.card}>
-            <View style={styles.cardName}>
-              <Text style={styles.name}>{card}</Text>
-              <View style={styles.images}>
-                <Image
-                  style={styles.naira}
-                  source={require('../assets/naira.png')}
-                />
+  render() {
+    return (
+      <DrawerLayoutAndroid
+        drawerWidth={260}
+        drawerPosition="left"
+        renderNavigationView={() => (
+          <Menu
+            navigation={this.props.navigation}
+            closeDrawer={this.closeDrawer}
+          />
+        )}
+        ref={(_drawer) => {
+          this.drawer = _drawer;
+        }}>
+        <View style={styles.maincontainer}>
+          <ScrollView>
+            <View style={styles.container}>
+              <TouchableWithoutFeedback onPress={() => this.openDrawer()}>
+                <Image source={require('../assets/menu.png')} />
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback onPress={() => notification}>
+                <Image source={require('../assets/notification.png')} />
+              </TouchableWithoutFeedback>
+            </View>
+            <View style={styles.card}>
+              <View style={styles.cardName}>
+                <Text style={styles.name}>{this.state.card}</Text>
+                <View style={styles.images}>
+                  <Image
+                    style={styles.naira}
+                    source={require('../assets/naira.png')}
+                  />
+                </View>
               </View>
-            </View>
-            <View style={styles.amount}>
-              <Text style={styles.mainAmount}>{amount}</Text>
-              <Text style={styles.wallet}>Wallet Balance</Text>
-            </View>
+              <View style={styles.amount}>
+                <Text style={styles.mainAmount}>{this.state.amount}</Text>
+                <Text style={styles.wallet}>Wallet Balance</Text>
+              </View>
 
-            {/* <Image
+              {/* <Image
               style={styles.frame}
               source={require('../assets/Frame.png')}
             /> */}
-          </View>
-          <Text style={styles.service}>Services</Text>
+            </View>
+            <Text style={styles.service}>Services</Text>
 
-          <View style={styles.cardContainer}>
-            <View style={styles.cards}>
-              <TouchableWithoutFeedback onPress={() => services}>
-                <View>
-                  <Image
-                    style={styles.cardimages}
-                    source={require('../assets/electricity1.png')}
-                  />
+            <View style={styles.cardContainer}>
+              <View style={styles.cards}>
+                <TouchableWithoutFeedback onPress={() => services}>
+                  <View>
+                    <Image
+                      style={styles.cardimages}
+                      source={require('../assets/electricity1.png')}
+                    />
 
-                  <Text style={styles.cardtest}>Electricity</Text>
-                </View>
-              </TouchableWithoutFeedback>
-            </View>
-            <View style={styles.cards}>
-              <TouchableWithoutFeedback onPress={() => services}>
-                <View>
-                  <Image
-                    style={styles.cardimages}
-                    source={require('../assets/phone1.png')}
-                  />
-                  <Text style={styles.cardtest}>Airtime</Text>
-                </View>
-              </TouchableWithoutFeedback>
-            </View>
-            <View style={styles.cards}>
-              <TouchableWithoutFeedback onPress={() => services}>
-                <View>
-                  <Image
-                    style={styles.cardimages}
-                    source={require('../assets/internet.png')}
-                  />
-                  <Text style={styles.cardtest}>Internet</Text>
-                </View>
-              </TouchableWithoutFeedback>
-            </View>
-            <View style={styles.cards}>
-              <TouchableWithoutFeedback onPress={() => services}>
-                <View>
-                  <Image
-                    style={styles.cardimages}
-                    source={require('../assets/television.png')}
-                  />
-                  <Text style={styles.cardtest}>TV</Text>
-                </View>
-              </TouchableWithoutFeedback>
-            </View>
-            <View style={styles.cards}>
-              <TouchableWithoutFeedback onPress={() => services}>
-                <View>
-                  <Image
-                    style={styles.cardimages}
-                    source={require('../assets/giftcards.png')}
-                  />
-                  <Text style={styles.cardtest}>Trade Gift Cards</Text>
-                </View>
-              </TouchableWithoutFeedback>
-            </View>
-            <View style={styles.cards}>
-              <TouchableWithoutFeedback onPress={() => services}>
-                <View>
-                  <Image
-                    style={styles.cardimages}
-                    source={require('../assets/bitcoin.png')}
-                  />
-                  <Text style={styles.cardtest}>Trade Bitcoins</Text>
-                </View>
-              </TouchableWithoutFeedback>
-            </View>
-            <Image style={styles.line} source={require('../assets/Line.png')} />
-          </View>
-          <Text style={styles.transactiontext}>Transactions</Text>
-          <View style={styles.transactionview}>
-            <View style={styles.transactionview1}>
-              <Image
-                style={styles.transactionimage}
-                source={require('../assets/internet.png')}
-              />
-              <View style={styles.textview}>
-                <Text style={styles.text1}>{transaction}</Text>
-                <Text style={styles.text}>{dateofTransactiopn}</Text>
+                    <Text style={styles.cardtest}>Electricity</Text>
+                  </View>
+                </TouchableWithoutFeedback>
               </View>
-            </View>
-
-            <Text style={styles.text2}>{amount}</Text>
-          </View>
-
-          <View style={styles.transactionviews}>
-            <View style={styles.transactionview1}>
-              <Image
-                style={styles.transactionimage}
-                source={require('../assets/electricity1.png')}
-              />
-              <View style={styles.textview}>
-                <Text style={styles.text1}>{transaction}</Text>
-                <Text style={styles.text}>{dateofTransactiopn}</Text>
+              <View style={styles.cards}>
+                <TouchableWithoutFeedback onPress={() => services}>
+                  <View>
+                    <Image
+                      style={styles.cardimages}
+                      source={require('../assets/phone1.png')}
+                    />
+                    <Text style={styles.cardtest}>Airtime</Text>
+                  </View>
+                </TouchableWithoutFeedback>
               </View>
-            </View>
-
-            <Text style={styles.text2}>{amount}</Text>
-          </View>
-          <View style={styles.transactionviews}>
-            <View style={styles.transactionview1}>
-              <Image
-                style={styles.transactionimage}
-                source={require('../assets/wallet.png')}
-              />
-              <View style={styles.textview}>
-                <Text style={styles.text1}>{transaction}</Text>
-                <Text style={styles.text}>30 July, 2020</Text>
+              <View style={styles.cards}>
+                <TouchableWithoutFeedback onPress={() => services}>
+                  <View>
+                    <Image
+                      style={styles.cardimages}
+                      source={require('../assets/internet.png')}
+                    />
+                    <Text style={styles.cardtest}>Internet</Text>
+                  </View>
+                </TouchableWithoutFeedback>
               </View>
+              <View style={styles.cards}>
+                <TouchableWithoutFeedback onPress={() => services}>
+                  <View>
+                    <Image
+                      style={styles.cardimages}
+                      source={require('../assets/television.png')}
+                    />
+                    <Text style={styles.cardtest}>TV</Text>
+                  </View>
+                </TouchableWithoutFeedback>
+              </View>
+              <View style={styles.cards}>
+                <TouchableWithoutFeedback onPress={() => services}>
+                  <View>
+                    <Image
+                      style={styles.cardimages}
+                      source={require('../assets/giftcards.png')}
+                    />
+                    <Text style={styles.cardtest}>Trade Gift Cards</Text>
+                  </View>
+                </TouchableWithoutFeedback>
+              </View>
+              <View style={styles.cards}>
+                <TouchableWithoutFeedback onPress={() => services}>
+                  <View>
+                    <Image
+                      style={styles.cardimages}
+                      source={require('../assets/bitcoin.png')}
+                    />
+                    <Text style={styles.cardtest}>Trade Bitcoins</Text>
+                  </View>
+                </TouchableWithoutFeedback>
+              </View>
+              <Image
+                style={styles.line}
+                source={require('../assets/Line.png')}
+              />
+            </View>
+            <Text style={styles.transactiontext}>Transactions</Text>
+            <View style={styles.transactionview}>
+              <View style={styles.transactionview1}>
+                <Image
+                  style={styles.transactionimage}
+                  source={require('../assets/internet.png')}
+                />
+                <View style={styles.textview}>
+                  <Text style={styles.text1}>{this.state.transaction}</Text>
+                  <Text style={styles.text}>{this.state.date}</Text>
+                </View>
+              </View>
+
+              <Text style={styles.text2}>{this.state.amount}</Text>
             </View>
 
-            <Text style={styles.text3}>-#140,000.00</Text>
-          </View>
-        </ScrollView>
-        <View style={styles.footernav}>
-          <View style={styles.imageview}>
+            <View style={styles.transactionviews}>
+              <View style={styles.transactionview1}>
+                <Image
+                  style={styles.transactionimage}
+                  source={require('../assets/electricity1.png')}
+                />
+                <View style={styles.textview}>
+                  <Text style={styles.text1}>{this.state.transaction}</Text>
+                  <Text style={styles.text}>{this.state.date}</Text>
+                </View>
+              </View>
+
+              <Text style={styles.text2}>{this.state.amount}</Text>
+            </View>
+            <View style={styles.transactionviews}>
+              <View style={styles.transactionview1}>
+                <Image
+                  style={styles.transactionimage}
+                  source={require('../assets/wallet.png')}
+                />
+                <View style={styles.textview}>
+                  <Text style={styles.text1}>{this.state.transaction}</Text>
+                  <Text style={styles.text}>30 July, 2020</Text>
+                </View>
+              </View>
+
+              <Text style={styles.text3}>-#140,000.00</Text>
+            </View>
+          </ScrollView>
+          <View style={styles.footernav}>
+            <View style={styles.imageview}>
+              <Image
+                style={styles.homeimage}
+                source={require('../assets/homes.png')}
+              />
+              <Text style={styles.home}>Home</Text>
+            </View>
             <Image
-              style={styles.homeimage}
-              source={require('../assets/homes.png')}
+              style={styles.image}
+              source={require('../assets/wallets.png')}
             />
-            <Text style={styles.home}>Home</Text>
+            <Image
+              style={styles.trade}
+              source={require('../assets/trade.png')}
+            />
+            <Image
+              style={styles.image}
+              source={require('../assets/rates.png')}
+            />
+            <Image
+              style={styles.image}
+              source={require('../assets/profile.png')}
+            />
           </View>
-          <Image
-            style={styles.image}
-            source={require('../assets/wallets.png')}
-          />
-          <Image style={styles.trade} source={require('../assets/trade.png')} />
-          <Image style={styles.image} source={require('../assets/rates.png')} />
-          <Image
-            style={styles.image}
-            source={require('../assets/profile.png')}
-          />
         </View>
-      </View>
-    </DrawerLayoutAndroid>
-  );
-};
-
-export default Dashboard;
+      </DrawerLayoutAndroid>
+    );
+  }
+}
 
 const styles = StyleSheet.create({
   maincontainer: {

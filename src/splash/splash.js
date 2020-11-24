@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -11,49 +11,31 @@ import {
 import {StatusBar} from 'react-native';
 // import PushNotification from "react-native-push-notification";
 
-export default class Splash extends Component {
-  static navigationOptions = {
-    headerShown: false,
+const Splash = (props) => {
+  useEffect(() => {
+    setTimeout(() => {
+      load();
+    }, 3000);
+  }, []);
+
+  const load = () => {
+    {
+      props.navigation.navigate('Register');
+    }
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      password: null,
-      regno: null,
-      PersonDetails: null,
-    };
+  return (
+    <View style={styles.container}>
+      <StatusBar backgroundColor="#1E90FF" barStyle="default" />
+      <Image source={require('../assets/splash.png')} style={styles.image} />
+      <Text style={styles.text}>Izikjon</Text>
+      <Text style={styles.texts}>...Grand Masters Of Instant Payments</Text>
+      {/* {this.load()} */}
+    </View>
+  );
+};
 
-    // PushNotification.localNotificationSchedule({
-    //   message: "My Notification",
-    //    date: new Date(Date.now() + 500 * 1000),
-    // })
-  }
-
-  //   async componentDidMount() {
-  //     setTimeout(() => {
-  //       this.load();
-  //     }, 3000);
-  //   }
-
-  //   load = () => {
-  //     {
-  //       this.props.navigation.navigate('Login');
-  //     }
-  //   };
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <StatusBar backgroundColor="#1E90FF" barStyle="default" />
-        <Image source={require('../assets/splash.png')} style={styles.image} />
-        <Text style={styles.text}>Izikjon</Text>
-        <Text style={styles.texts}>...Grand Masters Of Instant Payments</Text>
-        {/* {this.load()} */}
-      </View>
-    );
-  }
-}
+export default Splash;
 
 const styles = StyleSheet.create({
   image: {
